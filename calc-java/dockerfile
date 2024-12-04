@@ -1,0 +1,24 @@
+# Используем образ Ubuntu
+FROM ubuntu:latest
+
+# Обновляем репозитории и устанавливаем необходимые библиотеки для X11 и OpenJDK
+RUN apt-get update && \
+    apt-get install -y \
+    xvfb \
+    libxext6 \
+    libxrender1 \
+    libxtst6 \
+    libxi6 \
+    openjdk-17-jdk && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Создаем рабочую директорию
+WORKDIR /app
+
+# Копируем JAR-файл в контейнер
+COPY calc.jar /app/calc.jar
+
+ENV DISPLAY=host.docker.internal:0
+# Указываем команду для запуска приложения
+CMD ["java", "-jar", "calc.jar"]
